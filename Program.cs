@@ -1,48 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
+using System.IO;
+using System.Text.Json;
 
 class Program
 {
     static void Main()
     {
-        int n = 100000;
+        Dictionary<string, double> dict = new Dictionary<string, double>()
+        {
+            {"item1", 45.50},
+            {"item2", 35},
+            {"item3", 41.30},
+            {"item4", 55},
+            {"item5", 24}
+        };
 
-        var list = new List<int>();
-        var linkedList = new LinkedList<int>();
+        var result = dict
+            .OrderByDescending(x => x.Value)
+            .Take(3);
 
-        Stopwatch sw = new Stopwatch();
+        foreach (var item in result)
+        {
+            Console.WriteLine(item.Key + " " + item.Value);
+        }
 
-        sw.Start();
-        for (int i = 0; i < n; i++)
-            list.Add(i);
-        sw.Stop();
-        Console.WriteLine("List Add: " + sw.ElapsedMilliseconds + " ms");
+        string json = JsonSerializer.Serialize(result);
 
-        sw.Restart();
-        for (int i = 0; i < n; i++)
-            linkedList.AddLast(i);
-        sw.Stop();
-        Console.WriteLine("LinkedList Add: " + sw.ElapsedMilliseconds + " ms");
+        File.WriteAllText("result.json", json);
 
-        sw.Restart();
-        list.Contains(n - 1);
-        sw.Stop();
-        Console.WriteLine("List Search: " + sw.ElapsedTicks);
-
-        sw.Restart();
-        linkedList.Contains(n - 1);
-        sw.Stop();
-        Console.WriteLine("LinkedList Search: " + sw.ElapsedTicks);
-
-        sw.Restart();
-        list.Remove(n - 1);
-        sw.Stop();
-        Console.WriteLine("List Remove: " + sw.ElapsedTicks);
-
-        sw.Restart();
-        linkedList.Remove(n - 1);
-        sw.Stop();
-        Console.WriteLine("LinkedList Remove: " + sw.ElapsedTicks);
+        Console.WriteLine("JSON файл створено");
     }
 }
